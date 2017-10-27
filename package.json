@@ -1,0 +1,27 @@
+{
+  "name": "presellcampaign",
+  "version": "0.0.1",
+  "description": "Ubiatarplay presell campaing",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ubiatar/PreSellCampaign.git"
+  },
+  "keywords": [
+    "ubiatar",
+    "ubiatarplay",
+    "presell",
+    "ethereum",
+    "smart",
+    "contract"
+  ],
+  "author": "antoniogiordano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ubiatar/PreSellCampaign/issues"
+  },
+  "homepage": "https://github.com/Ubiatar/PreSellCampaign#readme"
+}
