@@ -28,17 +28,17 @@ contract PreSell is Owned {
     }
 
     function PreSell (
-        uint256 _tokenValue,
-        uint256 _hours
+    uint256 _tokenValue,
+    uint256 _seconds
     )
     {
         tokenValue = _tokenValue;
-        endTime = now + _hours * 1 hours;
+        endTime = now + _seconds * 1 seconds;
     }
 
     function updateValue
     (
-        uint256 newValue
+    uint256 newValue
     )
     onlyOwner
     {
@@ -47,12 +47,10 @@ contract PreSell is Owned {
     }
 
 
-    function withdraw
-    (
-        uint256 value
-    )
+    function withdraw ()
     onlyOwner
     {
+        uint256 value = this.balance;
         owner.transfer(this.balance);
         Withdraw(owner, value);
     }
