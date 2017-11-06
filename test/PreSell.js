@@ -26,83 +26,88 @@ Owned.setProvider(web3.currentProvider);
 PreSell.setProvider(web3.currentProvider);
 
 describe("PreSell tests", function () {
-  var accounts, networkId, preSell, owned, safeMath
+    var accounts, networkId, preSell, owned, safeMath
 
-  const preSellDeploy = () => {
-    return PreSell.new({from: accounts[0]})
-      .then(_preSell => {
-        preSell = _preSell
-      });
-  }
+    const preSellDeploy = (tokenValue, seconds) => {
+        return PreSell.new(tokenValue, seconds,{from: accounts[0]})
+            .then(_preSell => {
+                preSell = _preSell
+            });
+    }
 
-  before("get accounts", function () {
-    return web3.eth.getAccountsPromise()
-      .then(_accounts => accounts = _accounts)
-      .then(() => web3.version.getNetworkPromise())
-      .then(_networkId => {
-        networkId = _networkId;
-        PreSell.setNetwork(networkId);
-        console.log(accounts)
-      });
-  });
+    before("get accounts", function () {
+        return web3.eth.getAccountsPromise()
+            .then(_accounts => accounts = _accounts)
+            .then(() => web3.version.getNetworkPromise())
+            .then(_networkId => {
+                networkId = _networkId;
+                PreSell.setNetwork(networkId);
+                console.log(accounts)
+            });
+    });
 
-  before("deploy owned", function () {
-    return Owned.new({from: accounts[0]})
-      .then(_owned => owned = _owned)
-      .then(() => PreSell.link({Owned: owned.address}));
-  });
+    before("deploy owned", function () {
+        return Owned.new({from: accounts[0]})
+            .then(_owned => owned = _owned)
+            .then(() => PreSell.link({Owned: owned.address}));
+    });
 
-  before("deploy safemath", function () {
-    return SafeMath.new({from: accounts[0]})
-      .then(_safeMath => safeMath = _safeMath)
-      .then(() => PreSell.link({SafeMath: safeMath.address}));
-  });
+    before("deploy safemath", function () {
+        return SafeMath.new({from: accounts[0]})
+            .then(_safeMath => safeMath = _safeMath)
+            .then(() => PreSell.link({SafeMath: safeMath.address}));
+    });
 
-  /*beforeEach("deploy the PreSell", function() {
-   return PreSell.new({ from: accounts[0] })
-   .then(_preSell => preSell = _preSell);
-   });*/
+    /*beforeEach("deploy the PreSell", function() {
+     return PreSell.new({ from: accounts[0] })
+     .then(_preSell => preSell = _preSell);
+     });*/
 
-  it("should have 18 decimals", function () {
-    return preSellDeploy().then(() => preSell.decimals().then(decimals => assert.strictEqual(
-      decimals.toString(),
-      '18',
-      "should be 18")))
+    it("should have 18 decimals", function () {
+        return preSellDeploy()
+            .then(() => preSell.decimals()
+                .then(decimals => assert.strictEqual(
+                    decimals.toString(),
+                    '18',
+                    "should be 18")))
 
-  });
+    });
 
-  it("should update token value to 2 ether", function () {
-    return preSellDeploy().then(() => {
-      preSell.updateValue(web3.toWei(3, "ether"), {from: accounts[0]})
-    }).then(() => preSell.tokenValue().then(tokenValue => assert.strictEqual(
-      tokenValue.toString(),
-      web3.toWei(2, "ether"),
-      "should be 2 ether")));
-  });
+    it("should update token value to 2 ether", function () {
+        return preSellDeploy()
+            .then(() => {
+                preSell.updateValue(web3.toWei(2, "ether"), {from: accounts[0]})
+            })
+            .then(() => preSell.tokenValue()
+                .then(tokenValue => assert.strictEqual(
+                    tokenValue.toString(),
+                    web3.toWei(2, "ether"),
+                    "should be 2 ether")));
+    });
 
-  /*
-   it("should start with 4,000,000 coins", function() {
-   return tokenErc20.balanceOf.call(accounts[0])
-   .then(balance => assert.strictEqual(
-   web3.toBigNumber(balance).toString(10),
-   web3.toBigNumber(4000000).times('1000000000000000000').toString(10),
-   "should be 4M"));
-   });
+    /*
+     it("should start with 4,000,000 coins", function() {
+     return tokenErc20.balanceOf.call(accounts[0])
+     .then(balance => assert.strictEqual(
+     web3.toBigNumber(balance).toString(10),
+     web3.toBigNumber(4000000).times('1000000000000000000').toString(10),
+     "should be 4M"));
+     });
 
-   it("should burn 1000 tokens", function() {
-   return tokenErc20.burn.call(1000)
-   .then(success => assert.strictEqual(success, true, "should be true"))
-   .then(() => tokenErc20.balanceOf.call(accounts[0]))
-   .then(balance => assert.strictEqual(
-   web3.toBigNumber(balance).toString(10),
-   web3.toBigNumber(4000000).times('1000000000000000000').minus(1000).toString(10),
-   "should be 4 * 10 ^ 24 - 1000"))
-   });
+     it("should burn 1000 tokens", function() {
+     return tokenErc20.burn.call(1000)
+     .then(success => assert.strictEqual(success, true, "should be true"))
+     .then(() => tokenErc20.balanceOf.call(accounts[0]))
+     .then(balance => assert.strictEqual(
+     web3.toBigNumber(balance).toString(10),
+     web3.toBigNumber(4000000).times('1000000000000000000').minus(1000).toString(10),
+     "should be 4 * 10 ^ 24 - 1000"))
+     });
 
-   it("should return false", function() {
-   return tokenErc20.burn.call(1000, { from: accounts[1] })
-   .then(success => assert.fail(success, undefined, "if should throw"))
-   .catch(nope)
-   });
-   */
+     it("should return false", function() {
+     return tokenErc20.burn.call(1000, { from: accounts[1] })
+     .then(success => assert.fail(success, undefined, "if should throw"))
+     .catch(nope)
+     });
+     */
 });
