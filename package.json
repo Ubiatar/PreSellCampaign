@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/PreSell.js",
-    "compile": "./node_modules/.bin/truffle compile"
+    "compile": "./node_modules/.bin/truffle.cmd compile"
   },
   "dependencies": {
     "bluebird": "3.5.1",

@@ -85,6 +85,28 @@ describe("PreSell tests", function () {
                     "should be 2 ether")));
     });
 
+
+  it("should send ether", function () {
+
+    return preSellDeploy(web3.toWei(1, "ether"), 3600)
+      .then(() => web3.eth.getBalancePromise(accounts[0]).then((balance => console.log(balance))))
+      .then(() => web3.eth.sendTransactionPromise({from: accounts[0], to: preSell.address, value: web3.toWei(1, 'ether')}))
+      .then(() => web3.eth.getBalancePromise(accounts[0]).then((balance => console.log(balance))))
+      .then(() => preSell.remainingSupply()
+        .then(remainingSupply => assert.strictEqual(
+          remainingSupply.toString(),
+          '3.999999e+24',
+          "should be 3999999 ether")))
+      ;
+    /*
+     () => web3.eth.getBalancePromise(accounts[0])
+     .then(balance => assert.strictEqual(
+     balance.toString(),
+     web3.toWei(2, "ether"),
+     "should have 2 ether balance"))
+     */
+  });
+
     /*
      it("should start with 4,000,000 coins", function() {
      return tokenErc20.balanceOf.call(accounts[0])
