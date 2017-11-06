@@ -89,13 +89,11 @@ describe("PreSell tests", function () {
   it("should send ether", function () {
 
     return preSellDeploy(web3.toWei(1, "ether"), 3600)
-      .then(() => web3.eth.getBalancePromise(accounts[0]).then((balance => console.log(balance))))
       .then(() => web3.eth.sendTransactionPromise({from: accounts[0], to: preSell.address, value: web3.toWei(1, 'ether')}))
-      .then(() => web3.eth.getBalancePromise(accounts[0]).then((balance => console.log(balance))))
       .then(() => preSell.remainingSupply()
         .then(remainingSupply => assert.strictEqual(
-          remainingSupply.toString(),
-          '3.999999e+24',
+          remainingSupply.toString(10),
+          web3.toWei(3999999, "ether"),
           "should be 3999999 ether")))
       ;
     /*
