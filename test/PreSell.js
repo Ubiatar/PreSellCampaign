@@ -64,7 +64,7 @@ describe("PreSell tests", function () {
      });*/
 
     it("should have 18 decimals", function () {
-        return preSellDeploy()
+        return preSellDeploy(web3.toWei(2,"ether"), 3600)
             .then(() => preSell.decimals()
                 .then(decimals => assert.strictEqual(
                     decimals.toString(),
@@ -74,7 +74,7 @@ describe("PreSell tests", function () {
     });
 
     it("should update token value to 2 ether", function () {
-        return preSellDeploy()
+        return preSellDeploy(web3.toWei(2,"ether"), 3600)
             .then(() => {
                 preSell.updateValue(web3.toWei(2, "ether"), {from: accounts[0]})
             })
@@ -84,6 +84,17 @@ describe("PreSell tests", function () {
                     web3.toWei(2, "ether"),
                     "should be 2 ether")));
     });
+
+    it("should withdraw ", function() {
+        return preSellDeploy(web3.toWei(2,"ether"), 3600)
+            .then(() => web3.eth.sendTransactionPromise({from: accounts[0], to: preSell.address, value: web3.toWei(1, 'ether')}))
+            .then(() => preSell.withdraw({from: accounts[0]}))
+            .then(() => web3.eth.getBalancePromise(preSell.address)
+                .then((balance) => assert.strictEqual(
+                    balance.toString(),
+                    web3.toWei(0, "ether"),
+                    "should be 0 ether")))
+    })
 
     /*
      it("should start with 4,000,000 coins", function() {
