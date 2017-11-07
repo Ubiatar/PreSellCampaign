@@ -113,7 +113,6 @@ describe("PreSell tests", function () {
                     web3.toWei(3999999, "ether"),
                     "should be 3999999 ether")));
     })
-
         /*
          it("should start with 4,000,000 coins", function() {
          return tokenErc20.balanceOf.call(accounts[0])

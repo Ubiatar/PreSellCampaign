@@ -3,8 +3,8 @@ pragma solidity ^0.4.17;
 // @TODO: Add events!
 
 contract Owned {
-	address owner;
-	address candidateOwner;
+	address public owner;
+	address public candidateOwner;
 
 	function Owned()
 	{
