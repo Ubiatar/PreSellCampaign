@@ -113,29 +113,4 @@ describe("PreSell tests", function () {
                     web3.toWei(3999999, "ether"),
                     "should be 3999999 ether")));
     })
-        /*
-         it("should start with 4,000,000 coins", function() {
-         return tokenErc20.balanceOf.call(accounts[0])
-         .then(balance => assert.strictEqual(
-         web3.toBigNumber(balance).toString(10),
-         web3.toBigNumber(4000000).times('1000000000000000000').toString(10),
-         "should be 4M"));
-         });
-
-         it("should burn 1000 tokens", function() {
-         return tokenErc20.burn.call(1000)
-         .then(success => assert.strictEqual(success, true, "should be true"))
-         .then(() => tokenErc20.balanceOf.call(accounts[0]))
-         .then(balance => assert.strictEqual(
-         web3.toBigNumber(balance).toString(10),
-         web3.toBigNumber(4000000).times('1000000000000000000').minus(1000).toString(10),
-         "should be 4 * 10 ^ 24 - 1000"))
-         });
-
-         it("should return false", function() {
-         return tokenErc20.burn.call(1000, { from: accounts[1] })
-         .then(success => assert.fail(success, undefined, "if should throw"))
-         .catch(nope)
-         });
-         */
-    });
+});

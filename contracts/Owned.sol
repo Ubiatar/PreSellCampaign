@@ -6,6 +6,9 @@ contract Owned {
 	address public owner;
 	address public candidateOwner;
 
+	event UpdatedCandidate(bool success);
+	event GotOwnerwship(bool success);
+
 	function Owned()
 	{
 		owner = msg.sender;
@@ -18,6 +21,7 @@ contract Owned {
 	{
 		candidateOwner = newOwner;
 		success = true;
+		UpdatedCandidate(success);
 		return;
 	}
 
@@ -28,6 +32,7 @@ contract Owned {
 		owner = candidateOwner;
 		candidateOwner = 0x0;
 		success = true;
+		GotOwnerwship(success);
 		return;
 	}
 

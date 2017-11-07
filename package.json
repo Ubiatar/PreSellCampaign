@@ -6,7 +6,8 @@
   "scripts": {
     "test_preSell": "mocha test/PreSell.js",
     "compile": "./node_modules/.bin/truffle compile",
-    "test_owned": "mocha test/Owned.js"
+    "test_owned": "mocha test/Owned.js",
+    "test_ownedAttacker": "truffle test/OwnedAttacker.sol"
   },
   "dependencies": {
     "bluebird": "3.5.1",

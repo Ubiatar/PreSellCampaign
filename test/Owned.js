@@ -47,23 +47,4 @@ describe("Owned tests", function () {
             .then(_safeMath => safeMath = _safeMath)
             .then(() => Owned.link({SafeMath: safeMath.address}));
     });
-
-    it("should set new candidate owner", function () {
-        return owned.candidateOwner()
-            .then((candidate) => console.log('------------------ ',candidate))
-            .then(() => {
-                return owned.setCandidate(accounts[1], {
-                    from: accounts[0]
-                })
-                    .then(() =>
-                        owned.candidateOwner()
-                            .then((candidate) => console.log('****************** ',candidate))
-                    )
-            })
-    })
-
-    it("should set new candidate owner", function() {
-        return owned.setCandidate(accounts[1], {from: accounts[0]})
-            .then((success) => console.log(success))
-    })
 });
