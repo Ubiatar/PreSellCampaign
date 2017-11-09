@@ -10,6 +10,7 @@
   "dependencies": {
     "bluebird": "3.5.1",
     "truffle-contract": "2.0.5",
+    "truffle-hdwallet-provider": "0.0.3",
     "web3": "0.18.4"
   },
   "devDependencies": {
