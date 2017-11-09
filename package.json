@@ -5,16 +5,20 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/PreSell.js",
-    "compile": "./node_modules/.bin/truffle.cmd compile"
+    "compile": "./node_modules/.bin/truffle.cmd compile",
+    "migrate": "./node_modules/.bin/truffle.cmd migrate --network ropsten"
   },
   "dependencies": {
     "bluebird": "3.5.1",
+    "ethereumjs-wallet": "^0.6.0",
     "truffle-contract": "2.0.5",
     "truffle-hdwallet-provider": "0.0.3",
-    "web3": "0.18.4"
+    "web3": "^0.18.4",
+    "web3-provider-engine": "^8.6.1",
+    "zeppelin-solidity": "^1.3.0"
   },
   "devDependencies": {
-    "bip39": "2.3.0",
+    "bip39": "^2.3.0",
     "ethereumjs-testrpc": "2.2.7",
     "mocha": "3.5.3",
     "truffle": "4.0.0-beta.2"
