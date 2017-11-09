@@ -16,6 +16,9 @@ Promise.promisifyAll(web3.version, {suffix: "Promise"});
 
 const assert = require('assert-plus');
 
+const chai = require('chai').use(require('chai-as-promised'));
+const should = chai.should();
+
 const truffleContract = require("truffle-contract");
 
 const SafeMath = truffleContract(require(__dirname + "/../build/contracts/SafeMath.json"));
@@ -47,4 +50,21 @@ describe("Owned tests", function () {
             .then(_safeMath => safeMath = _safeMath)
             .then(() => Owned.link({SafeMath: safeMath.address}));
     });
+
+    it("should set accounts[1] as a new candidate", function () {
+        return owned.candidateOwner()
+            .then(() => owned.setCandidate(accounts[1], {from: accounts[0]})
+                .then(() => owned.candidateOwner())
+                .then(candidateOwner => assert.strictEqual(
+                    candidateOwner.toString(),
+                    accounts[1],
+                    "should set candidateOwner to accounts[1]")))
+    });
+
+    it("shouldn't set accounts[1] as a new candidate", function () {
+        return owned.candidateOwner()
+            .then(() => {
+                return owned.setCandidate(accounts[1], {from: accounts[1]}).should.be.rejected;
+            })
+    })
 });
