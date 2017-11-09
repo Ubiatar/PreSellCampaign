@@ -7,13 +7,17 @@ import "../contracts/Owned.sol";
 
 
 contract OwnedAttacker {
-
-    function testChangeOwner() {
+/*
+    function testChangeOwner()
+    public
+    {
         Owned owned = Owned(DeployedAddresses.Owned());
 
         owned.owner = 0x0;
 
         Assert.notEqual(owned.owner, 0x0, "should be different");
     }
+*/
+
 
 }
