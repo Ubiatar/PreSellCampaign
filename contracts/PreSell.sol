@@ -16,24 +16,42 @@ contract PreSell is Owned {
 
     uint256 public endTime;
 
+    bool public isCampaignStarted;
+
+    event CampaignStarted();
     event UpdateValue(uint256 newValue);
     event AssignToken(address indexed to, uint value);
     event Overflow(address to, uint value);
     event Withdraw(address to, uint value);
 
-    modifier beforeEndTime()
+    modifier startedAndBeforeEndTime()
     {
+        require(isCampaignStarted);
         require(now < endTime);
         _;
     }
 
     function PreSell (
-        uint256 _tokenValue,
-        uint256 _hours
+        uint256 _tokenValue
     )
     {
-        tokenValue = _tokenValue;
-        endTime = now + _hours * 1 hours;
+        isCampaignStarted = false;
+        if (_tokenValue == 0) {
+            tokenValue = 100;
+        } else {
+            tokenValue = _tokenValue;
+        }
+    }
+
+    function startCampaign
+    (
+    uint256 _seconds
+    )
+    onlyOwner
+    {
+        endTime = now + _seconds * 1 seconds;
+        isCampaignStarted = true;
+        CampaignStarted();
     }
 
     function updateValue
@@ -45,7 +63,6 @@ contract PreSell is Owned {
         tokenValue = newValue;
         UpdateValue(newValue);
     }
-
 
     function withdraw
     (
@@ -62,7 +79,7 @@ contract PreSell is Owned {
     ******* */
     function()
     payable
-    beforeEndTime
+    startedAndBeforeEndTime
     {
         require(remainingSupply > 0);
         uint256 value = msg.value.mul(10 ** decimals).div(tokenValue);

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/PreSell.js",
-    "compile": "./node_modules/.bin/truffle compile"
+    "compile": "rimraf build && ./node_modules/.bin/truffle compile"
   },
   "dependencies": {
     "bluebird": "3.5.1",
@@ -16,6 +16,7 @@
     "bip39": "2.3.0",
     "ethereumjs-testrpc": "2.2.7",
     "mocha": "3.5.3",
+    "rimraf": "^2.6.2",
     "truffle": "4.0.0-beta.2"
   },
   "repository": {
