@@ -4,9 +4,10 @@
   "description": "Ubiatarplay presell campaing",
   "main": "index.js",
   "scripts": {
-    "compile": "rimraf build && ./node_modules/.bin/truffle.cmd compile",
-    "testrpc": "./node_modules/.bin/testrpc.cmd",
+    "compile": "rimraf build && ./node_modules/.bin/truffle compile",
     "test_preSell": "mocha test/PreSell.js",
+    "win_compile": "rimraf build && ./node_modules/.bin/truffle.cmd compile",
+    "testrpc": "./node_modules/.bin/testrpc.cmd",
     "test_owned": "mocha test/Owned.js",
     "test_all": "truffle.cmd test",
     "migrate": "./node_modules/.bin/truffle.cmd migrate --network ropsten"

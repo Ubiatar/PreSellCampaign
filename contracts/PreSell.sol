@@ -32,21 +32,21 @@ contract PreSell is Owned {
     }
 
     function PreSell (
-    uint256 _tokenValue,
-    uint256 _seconds
+        uint256 _tokenValue
     )
     {
+        require(_tokenValue > 0);
         isCampaignStarted = false;
         tokenValue = _tokenValue;
-        endTime = now + _seconds * 1 seconds;
     }
 
     function startCampaign
     (
-    uint256 _seconds
+        uint256 _seconds
     )
     onlyOwner
     {
+        require(_seconds > 0);
         endTime = now + _seconds * 1 seconds;
         isCampaignStarted = true;
         CampaignStarted();
@@ -62,10 +62,7 @@ contract PreSell is Owned {
         UpdateValue(newValue);
     }
 
-    function withdraw
-    (
-        uint256 value
-    )
+    function withdraw ()
     onlyOwner
     {
         uint256 value = this.balance;
