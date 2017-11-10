@@ -67,4 +67,15 @@ describe("Owned tests", function () {
                 return owned.setCandidate(accounts[1], {from: accounts[1]}).should.be.rejected;
             })
     })
+
+    it("should set accounts[1] as the new owner", function () {
+        return owned.owner()
+            .then(() => owned.setCandidate(accounts[1], {from: accounts[0]}))
+            .then(() => owned.getOwnership({from: accounts[1]})
+                .then(() => owned.owner())
+                .then(owner => assert.strictEqual(
+                    owner.toString(),
+                    accounts[1],
+                    "should set owner to accounts[1]")))
+    })
 });

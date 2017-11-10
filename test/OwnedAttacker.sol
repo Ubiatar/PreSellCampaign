@@ -18,6 +18,4 @@ contract OwnedAttacker {
         Assert.notEqual(owned.owner, 0x0, "should be different");
     }
 */
-
-
 }

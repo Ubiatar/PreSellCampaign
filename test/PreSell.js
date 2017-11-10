@@ -58,11 +58,6 @@ describe("PreSell tests", function () {
             .then(() => PreSell.link({SafeMath: safeMath.address}));
     });
 
-    /*beforeEach("deploy the PreSell", function() {
-     return PreSell.new({ from: accounts[0] })
-     .then(_preSell => preSell = _preSell);
-     });*/
-
     it("should have 18 decimals", function () {
         return preSellDeploy(web3.toWei(1, "ether"), 3600)
             .then(() => preSell.decimals()

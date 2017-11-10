@@ -31,7 +31,6 @@ contract PreSell is Owned {
     uint256 _tokenValue,
     uint256 _seconds
     )
-    public
     {
         tokenValue = _tokenValue;
         endTime = now + _seconds * 1 seconds;
@@ -41,7 +40,6 @@ contract PreSell is Owned {
     (
     uint256 newValue
     )
-    public
     onlyOwner
     {
         tokenValue = newValue;
@@ -50,7 +48,6 @@ contract PreSell is Owned {
 
 
     function withdraw ()
-    public
     onlyOwner
     {
         uint256 value = this.balance;
@@ -63,7 +60,6 @@ contract PreSell is Owned {
     ******* */
     function()
     payable
-    public
     beforeEndTime
     {
         require(remainingSupply > 0);

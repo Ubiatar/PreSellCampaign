@@ -16,7 +16,6 @@ contract Owned {
 	}
 
 	function setCandidate (address newOwner)
-	public
 	onlyOwner
 	returns (bool success)
 	{
@@ -27,7 +26,6 @@ contract Owned {
 	}
 
 	function getOwnership ()
-	public
 	onlyCandidate
 	returns (bool success)
 	{
