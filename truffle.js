@@ -1,7 +1,7 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
 
-var infura_apikey = "hoSQCRJr8F8LFysODEUf";
-var mnemonic = "core tag flight cash stone hotel camp lyrics meat price dream flame";
+var infura_apikey = "" ;
+var mnemonic = "twelve words you can find in metamask/settings/reveal seed words blabla";
 
 module.exports = {
     networks: {
