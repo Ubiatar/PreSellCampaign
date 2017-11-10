@@ -4,6 +4,8 @@
 
 const nope = () => null
 
+const _ = require('lodash')
+
 const Web3 = require('web3')
 const web3 = new Web3()
 
@@ -17,6 +19,22 @@ Promise.promisifyAll(web3.version, { suffix: "Promise" });
 const assert = require('assert-plus');
 
 const truffleContract = require("truffle-contract");
+
+const assertEvent = (contract, filter) => {
+  return new Promise((resolve, reject) => {
+    var event = contract[filter.event]()
+    event.watch()
+    event.get((error, logs) => {
+      var log = _.filter(logs, filter)
+      if (log && Array.isArray(log) && log.length > 0) {
+        resolve(log)
+      } else {
+        throw Error("Failed to find filtered event for " + filter.event)
+      }
+    })
+    event.stopWatching(() => null)
+  })
+}
 
 const SafeMath = truffleContract(require(__dirname + "/../build/contracts/SafeMath.json"));
 const Owned = truffleContract(require(__dirname + "/../build/contracts/Owned.json"));
@@ -102,6 +120,13 @@ describe("PreSell tests", () => {
         value: 10,
         gas: 500000
       }))
+      .then(web3.eth.getTransactionPromise)
+      .then(result => assert(result.blockNumber > 0, "it should be already mined"))
+      .then(() => assertEvent(preSell, {event: 'AssignToken'}))
+      .then(events => {
+        assert(events.length === 1, "it should be just one event")
+        assert(events[0].args.to === tokenBuyer, "it should be the token buyer")
+      })
   });
 
   /*
