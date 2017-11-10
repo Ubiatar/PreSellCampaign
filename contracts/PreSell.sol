@@ -32,15 +32,13 @@ contract PreSell is Owned {
     }
 
     function PreSell (
-        uint256 _tokenValue
+    uint256 _tokenValue,
+    uint256 _seconds
     )
     {
         isCampaignStarted = false;
-        if (_tokenValue == 0) {
-            tokenValue = 100;
-        } else {
-            tokenValue = _tokenValue;
-        }
+        tokenValue = _tokenValue;
+        endTime = now + _seconds * 1 seconds;
     }
 
     function startCampaign
@@ -70,6 +68,7 @@ contract PreSell is Owned {
     )
     onlyOwner
     {
+        uint256 value = this.balance;
         owner.transfer(this.balance);
         Withdraw(owner, value);
     }
