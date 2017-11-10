@@ -1,12 +1,15 @@
 pragma solidity ^0.4.17;
 
-// @TODO: Add events!
 
 contract Owned {
-	address owner;
-	address candidateOwner;
+	address public owner;
+	address public candidateOwner;
+
+	event UpdatedCandidate(bool success);
+	event GotOwnership(bool success);
 
 	function Owned()
+	public
 	{
 		owner = msg.sender;
 		candidateOwner = 0x0;
@@ -18,6 +21,7 @@ contract Owned {
 	{
 		candidateOwner = newOwner;
 		success = true;
+		UpdatedCandidate(success);
 		return;
 	}
 
@@ -28,6 +32,7 @@ contract Owned {
 		owner = candidateOwner;
 		candidateOwner = 0x0;
 		success = true;
+		GotOwnership(success);
 		return;
 	}
 

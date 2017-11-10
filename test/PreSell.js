@@ -29,7 +29,7 @@ describe("PreSell tests", function () {
     var accounts, networkId, preSell, owned, safeMath
 
     const preSellDeploy = (tokenValue, seconds) => {
-        return PreSell.new(tokenValue, seconds,{from: accounts[0]})
+        return PreSell.new(tokenValue, seconds, {from: accounts[0]})
             .then(_preSell => {
                 preSell = _preSell
             });
@@ -58,13 +58,8 @@ describe("PreSell tests", function () {
             .then(() => PreSell.link({SafeMath: safeMath.address}));
     });
 
-    /*beforeEach("deploy the PreSell", function() {
-     return PreSell.new({ from: accounts[0] })
-     .then(_preSell => preSell = _preSell);
-     });*/
-
     it("should have 18 decimals", function () {
-        return preSellDeploy()
+        return preSellDeploy(web3.toWei(1, "ether"), 3600)
             .then(() => preSell.decimals()
                 .then(decimals => assert.strictEqual(
                     decimals.toString(),
@@ -74,7 +69,7 @@ describe("PreSell tests", function () {
     });
 
     it("should update token value to 2 ether", function () {
-        return preSellDeploy()
+        return preSellDeploy(web3.toWei(1, "ether"), 3600)
             .then(() => {
                 preSell.updateValue(web3.toWei(2, "ether"), {from: accounts[0]})
             })
@@ -85,49 +80,32 @@ describe("PreSell tests", function () {
                     "should be 2 ether")));
     });
 
+    it("should send ether and withdraw it", function () {
+        return preSellDeploy(web3.toWei(1, "ether"), 3600)
+            .then(() => web3.eth.sendTransactionPromise({
+                from: accounts[0],
+                to: preSell.address,
+                value: web3.toWei(1, 'ether')
+            }))
+            .then(() => preSell.withdraw({from: accounts[0]}))
+            .then(() => web3.eth.getBalancePromise(preSell.address)
+                .then((balance) => assert.strictEqual(
+                    balance.toString(),
+                    web3.toWei(0, "ether"),
+                    "should be 0 ether")))
+    })
 
-  it("should send ether", function () {
-
-    return preSellDeploy(web3.toWei(1, "ether"), 3600)
-      .then(() => web3.eth.sendTransactionPromise({from: accounts[0], to: preSell.address, value: web3.toWei(1, 'ether')}))
-      .then(() => preSell.remainingSupply()
-        .then(remainingSupply => assert.strictEqual(
-          remainingSupply.toString(10),
-          web3.toWei(3999999, "ether"),
-          "should be 3999999 ether")))
-      ;
-    /*
-     () => web3.eth.getBalancePromise(accounts[0])
-     .then(balance => assert.strictEqual(
-     balance.toString(),
-     web3.toWei(2, "ether"),
-     "should have 2 ether balance"))
-     */
-  });
-
-    /*
-     it("should start with 4,000,000 coins", function() {
-     return tokenErc20.balanceOf.call(accounts[0])
-     .then(balance => assert.strictEqual(
-     web3.toBigNumber(balance).toString(10),
-     web3.toBigNumber(4000000).times('1000000000000000000').toString(10),
-     "should be 4M"));
-     });
-
-     it("should burn 1000 tokens", function() {
-     return tokenErc20.burn.call(1000)
-     .then(success => assert.strictEqual(success, true, "should be true"))
-     .then(() => tokenErc20.balanceOf.call(accounts[0]))
-     .then(balance => assert.strictEqual(
-     web3.toBigNumber(balance).toString(10),
-     web3.toBigNumber(4000000).times('1000000000000000000').minus(1000).toString(10),
-     "should be 4 * 10 ^ 24 - 1000"))
-     });
-
-     it("should return false", function() {
-     return tokenErc20.burn.call(1000, { from: accounts[1] })
-     .then(success => assert.fail(success, undefined, "if should throw"))
-     .catch(nope)
-     });
-     */
+    it("should buy 1 token from preSell and update remaining supply", function () {
+        return preSellDeploy(web3.toWei(1, "ether"), 3600)
+            .then(() => web3.eth.sendTransactionPromise({
+                from: accounts[0],
+                to: preSell.address,
+                value: web3.toWei(1, 'ether')
+            }))
+            .then(() => preSell.remainingSupply()
+                .then(remainingSupply => assert.strictEqual(
+                    remainingSupply.toString(10),
+                    web3.toWei(3999999, "ether"),
+                    "should be 3999999 ether")));
+    })
 });
