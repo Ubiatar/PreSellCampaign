@@ -296,11 +296,66 @@ describe("PreSell token purchase", () => {
     return preSellDeploy(web3.toWei(1, "ether"))
       .then(() => preSell.startCampaign(3600, {from: owner}))
       .then(() => web3.eth.sendTransactionPromise({
-        from: accounts[0],
+        from: tokenBuyer,
         to: preSell.address,
         value: web3.toWei(1, 'ether')
       }))
       .then(() => preSell.remainingSupply())
       .then(remainingSupply => assert.strictEqual(remainingSupply.toString(10), web3.toWei(3999999, "ether"), "should be 3999999 ether"))
+  })
+
+  it("should buy all 4000000 tokens with overflow and payback of 2 ether", () => {
+    let balance
+    return preSellDeploy(web3.toWei(0.000001, "ether"))
+      .then(() => preSell.startCampaign(3600, {from: owner}))
+      .then(() => preSell.remainingSupply())
+      .then(remainingSupply => assert(remainingSupply.toString(10) === web3.toWei(4000000, 'ether'), "should be 4000000 of tokens"))
+      .then(() => web3.eth.getBalancePromise(tokenBuyer))
+      .then(_balance => balance = _balance)
+      .then(() => web3.eth.sendTransactionPromise({
+        from: tokenBuyer,
+        to: preSell.address,
+        value: web3.toWei(3, 'ether'),
+        gasPrice: 0
+      }))
+      .then(() => web3.eth.getBalancePromise(tokenBuyer))
+      .then(_balance => assert(balance.sub(web3.toWei(3, 'ether')).toString(10) === _balance.toString(10), "should be initial balance - 3 ether"))
+      .then(() => preSell.remainingSupply())
+      .then(remainingSupply => assert(remainingSupply.toString(10) === web3.toWei(1000000, 'ether'), "should be 1000000 of tokens"))
+      .then(() => assertEvent(preSell, {event: 'AssignToken', args: {to: tokenBuyer}}))
+      .then(events => {
+        assert(events.length === 1, "should be just one event")
+        assert(events[0].args.to === tokenBuyer, "should be the token buyer")
+        assert(events[0].args.value.toString(10) === web3.toWei(3000000, 'ether').toString(10), "should be 3000000 tokens")
+      })
+      .then(() => web3.eth.sendTransactionPromise({
+        from: tokenBuyer,
+        to: preSell.address,
+        value: web3.toWei(3, 'ether'),
+        gasPrice: 0
+      }))
+      .then(() => web3.eth.getBalancePromise(tokenBuyer))
+      .then(_balance => assert(balance.sub(web3.toWei(4, 'ether')).toString(10) === _balance.toString(10), "should be initial balance - 4 ether"))
+      .then(() => assertEvent(preSell, {event: 'AssignToken', args: {to: tokenBuyer}}))
+      .then(events => {
+        let lastEvent = events[events.length - 1]
+        assert(lastEvent.args.to === tokenBuyer, "should be the token buyer")
+        assert(lastEvent.args.value.toString(10) === web3.toWei(1000000, 'ether').toString(10), "should be 1000000 tokens")
+      })
+      .then(() => assertEvent(preSell, {event: 'Overflow'}))
+      .then(events => {
+        let lastEvent = events[events.length - 1]
+        assert(lastEvent.args.to === tokenBuyer, "should be the token buyer")
+        assert(lastEvent.args.value.toString(10) === web3.toWei(2, 'ether'), "should be 2 ether of payback")
+      })
+      .then(() => preSell.remainingSupply())
+      .then(remainingSupply => assert(remainingSupply.toString(10) === '0', "should be 0 tokens"))
+      .then(() => web3.eth.sendTransactionPromise({
+        from: tokenBuyer,
+        to: preSell.address,
+        value: web3.toWei(3, 'ether'),
+        gasPrice: 0
+      }))
+      .catch(err => assert(err, "should fail"))
   })
 })

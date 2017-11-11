@@ -78,15 +78,18 @@ contract PreSell is Owned {
     startedAndBeforeEndTime
     {
         require(remainingSupply > 0);
-        uint256 value = msg.value.mul(10 ** decimals).div(tokenValue);
-        if (remainingSupply >= value) {
-            AssignToken(msg.sender, value);
-            remainingSupply = remainingSupply.sub(value);
-        }
-        else {
-            AssignToken(msg.sender, remainingSupply);
+        uint256 tokens = msg.value.mul(10 ** decimals).div(tokenValue);
+        if (remainingSupply >= tokens) {
+            AssignToken(msg.sender, tokens);
+            remainingSupply = remainingSupply.sub(tokens);
+        } else {
+            tokens = remainingSupply;
+            uint256 payback = msg.value.sub(remainingSupply.mul(tokenValue).div(10 ** decimals));
+            require(payback < msg.value);
             remainingSupply = 0;
-            Overflow(msg.sender, value - remainingSupply);
+            msg.sender.transfer(payback);
+            AssignToken(msg.sender, tokens);
+            Overflow(msg.sender, payback);
         }
     }
 }
