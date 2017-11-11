@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "rimraf build && ./node_modules/.bin/truffle compile",
     "test_preSell": "mocha test/PreSell.js",
-    "win_compile": "rimraf build && ./node_modules/.bin/truffle.cmd compile",
+    "win_compile": "rimraf build && truffle.cmd compile",
     "testrpc": "./node_modules/.bin/testrpc.cmd",
     "test_owned": "mocha test/Owned.js",
     "test_all": "truffle.cmd test",
