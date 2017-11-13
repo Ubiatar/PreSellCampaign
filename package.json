@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "compile": "rimraf build && ./node_modules/.bin/truffle compile",
-    "test_preSell": "mocha test/PreSell.js",
+    "test": "mocha test/Owned.js test/PreSell.js",
+    "testPreSell": "mocha test/PreSell.js",
+    "testOwned": "mocha test/Owned.js",
     "win_compile": "rimraf build && ./node_modules/.bin/truffle.cmd compile",
     "testrpc": "./node_modules/.bin/testrpc.cmd",
-    "test_owned": "mocha test/Owned.js",
+    "testSolidity": "./node_modules/.bin/truffle test",
     "test_all": "truffle.cmd test",
     "migrate": "./node_modules/.bin/truffle.cmd migrate --network ropsten"
   },
