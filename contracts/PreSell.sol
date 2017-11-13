@@ -18,11 +18,16 @@ contract PreSell is Owned {
 
     bool public isCampaignStarted;
 
+    address public toBeRefund = 0x0;
+
+    uint256 public refundAmount;
+
     event CampaignStarted();
     event UpdateValue(uint256 newValue);
     event AssignToken(address indexed to, uint value);
     event Overflow(address to, uint value);
     event Withdraw(address to, uint value);
+    event Refund(address to, uint value);
 
     modifier startedAndBeforeEndTime()
     {
@@ -70,6 +75,19 @@ contract PreSell is Owned {
         Withdraw(owner, value);
     }
 
+    function refund ()
+    onlyOwner
+    {
+        require(toBeRefund != 0x0);
+        require(refundAmount > 0);
+        uint256 _refundAmount = refundAmount;
+        address _toBeRefund = toBeRefund;
+        refundAmount = 0;
+        toBeRefund = 0x0;
+        _toBeRefund.transfer(_refundAmount);
+        Refund(_toBeRefund, _refundAmount);
+    }
+
     /* *******
         PreSell payment fallback
     ******* */
@@ -78,18 +96,20 @@ contract PreSell is Owned {
     startedAndBeforeEndTime
     {
         require(remainingSupply > 0);
+        require(msg.value >= 50 finney);
         uint256 tokens = msg.value.mul(10 ** decimals).div(tokenValue);
         if (remainingSupply >= tokens) {
             AssignToken(msg.sender, tokens);
             remainingSupply = remainingSupply.sub(tokens);
         } else {
             tokens = remainingSupply;
-            uint256 payback = msg.value.sub(remainingSupply.mul(tokenValue).div(10 ** decimals));
-            require(payback < msg.value);
+            uint256 _refundAmount = msg.value.sub(remainingSupply.mul(tokenValue).div(10 ** decimals));
+            require(_refundAmount < msg.value);
             remainingSupply = 0;
-            msg.sender.transfer(payback);
+            refundAmount = _refundAmount;
+            toBeRefund = msg.sender;
             AssignToken(msg.sender, tokens);
-            Overflow(msg.sender, payback);
+            Overflow(msg.sender, _refundAmount);
         }
     }
 }
