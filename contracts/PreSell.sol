@@ -25,6 +25,8 @@ contract PreSell is Owned {
     event CampaignStarted();
     event UpdateValue(uint256 newValue);
     event AssignToken(address indexed to, uint value);
+    event GiftToken(address to, uint value);
+    event GiftingFailed(address to, uint value);
     event Overflow(address to, uint value);
     event Withdraw(address to, uint value);
     event Refund(address to, uint value);
@@ -68,6 +70,24 @@ contract PreSell is Owned {
         UpdateValue(newValue);
     }
 
+    function giftTokens
+    (
+         address receiver,
+         uint256 _tokens
+    )
+    onlyOwner
+    {
+        require(remainingSupply > 0);
+        uint256 tokens = _tokens * 10 ** decimals;
+        if (remainingSupply >= tokens) {
+            remainingSupply = remainingSupply.sub(tokens);
+            GiftToken(receiver, tokens);
+        }
+        else {
+            GiftingFailed(receiver, tokens);
+        }
+    }
+
     function withdraw ()
     onlyOwner
     {
@@ -100,8 +120,8 @@ contract PreSell is Owned {
         require(msg.value >= 50 finney);
         uint256 tokens = msg.value.mul(10 ** decimals).div(tokenValue);
         if (remainingSupply >= tokens) {
-            AssignToken(msg.sender, tokens);
             remainingSupply = remainingSupply.sub(tokens);
+            AssignToken(msg.sender, tokens);
         } else {
             tokens = remainingSupply;
             uint256 _refundAmount = msg.value.sub(remainingSupply.mul(tokenValue).div(10 ** decimals));

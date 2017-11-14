@@ -387,4 +387,52 @@ describe("PreSell token purchase", () => {
       .then(() => web3.eth.getBalancePromise(owner))
       .then(_balance => assert(_balance.toString(10) === balance.add(web3.toWei(4, 'ether')).toString(10), "should be balance plus 4 Ether of campaign"))
   })
+
+    it("should gift 1 token to tokenBuyer", () => {
+        return preSellDeploy(web3.toWei(1, "ether"))
+            .then(() => preSell.startCampaign(3600, {from: owner}))
+            .then(() => preSell.giftTokens(tokenBuyer, 1, {from: owner}))
+            .then(() => preSell.remainingSupply())
+            .then(remainingSupply => assert.strictEqual(
+                remainingSupply.toString(10),
+                web3.toWei(3999999, 'ether'),
+                "should be 3999999"
+            ))
+            .then(() => assertEvent(preSell, {event: 'GiftToken', args: {to: tokenBuyer}}))
+            .then(events => {
+                assert(events.length === 1, "should be just one event")
+                assert(events[0].args.to === tokenBuyer, "should be the receiver of the gift")
+                assert(events[0].args.value.toString(10) === web3.toWei(1, 'ether').toString(10), "should be 1 token")
+            })
+    })
+
+    it("should fail to gift tokens to attacker", () => {
+        return preSellDeploy(web3.toWei(1, "ether"))
+            .then(() => preSell.startCampaign(3600, {from: owner}))
+            .then(() => preSell.giftTokens(tokenBuyer, 1, {from: attacker}).should.be.rejected)
+            .then(() => preSell.remainingSupply())
+            .then(remainingSupply => assert.strictEqual(
+                remainingSupply.toString(10),
+                web3.toWei(4000000, 'ether'),
+                "should be 4000000"
+            ))
+    })
+
+    it("should fail to gift more tokens than remainingTokens", () => {
+        return preSellDeploy(web3.toWei(1, "ether"))
+            .then(() => preSell.startCampaign(3600, {from: owner}))
+            .then(() => preSell.giftTokens(tokenBuyer, 5000000, {from: owner}))
+            .then(() => preSell.remainingSupply())
+            .then(remainingSupply => assert.strictEqual(
+                remainingSupply.toString(10),
+                web3.toWei(4000000, 'ether'),
+                "should be 4000000"
+            ))
+            .then(() => assertEvent(preSell, {event: 'GiftingFailed', args: {to: tokenBuyer}}))
+            .then(events => {
+                assert(events.length === 1, "should be just one event")
+                assert(events[0].args.to === tokenBuyer, "should be the receiver of the gift")
+                assert(events[0].args.value.toString(10) === web3.toWei(5000000, 'ether').toString(10), "should be 5000000 tokens")
+            })
+    })
 })
