@@ -36,7 +36,8 @@ contract PreSell is Owned {
         _;
     }
 
-    function PreSell (
+    function PreSell
+    (
         uint256 _tokenValue
     )
     {

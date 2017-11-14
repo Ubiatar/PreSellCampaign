@@ -7,7 +7,7 @@ import "../contracts/Owned.sol";
 
 
 contract OwnedAttacker {
-    /*
+/*
     function testChangeOwner()
     public
     {
