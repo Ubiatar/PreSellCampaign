@@ -428,4 +428,16 @@ describe("PreSell token purchase", () => {
         "should be 4000000"
       ))
   })
+
+    it("should fail to send tokens to an inexistent address", () => {
+        return preSellDeploy(web3.toWei(1, "ether"))
+            .then(() => preSell.startCampaign(3600, {from: owner}))
+            .then(() => preSell.giveTokens(0x0, 10, {from: owner}).should.be.rejected)
+            .then(() => preSell.remainingSupply())
+            .then(remainingSupply => assert.strictEqual(
+                remainingSupply.toString(10),
+                web3.toWei(4000000, 'ether'),
+                "should be 4000000"
+            ))
+    })
 })
