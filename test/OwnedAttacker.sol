@@ -7,6 +7,7 @@ import "../contracts/Owned.sol";
 
 
 contract OwnedAttacker {
+    /*
     function testChangeOwner()
     public
     {
@@ -16,4 +17,5 @@ contract OwnedAttacker {
 
         Assert.notEqual(owned.owner, msg.sender, "should be different");
     }
+*/
 }

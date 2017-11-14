@@ -8,7 +8,7 @@
     "test": "mocha test/Owned.js test/PreSell.js",
     "testPreSell": "mocha test/PreSell.js",
     "testOwned": "mocha test/Owned.js",
-    "win_compile": "rimraf build && ./node_modules/.bin/truffle.cmd compile",
+    "win_compile": "rimraf build && truffle.cmd compile",
     "testrpc": "./node_modules/.bin/testrpc.cmd",
     "testSolidity": "./node_modules/.bin/truffle test",
     "test_all": "truffle.cmd test",
@@ -31,7 +31,7 @@
     "lodash": "^4.17.4",
     "mocha": "3.5.3",
     "rimraf": "^2.6.2",
-    "truffle": "4.0.0-beta.2"
+    "truffle": "4.0.1"
   },
   "repository": {
     "type": "git",

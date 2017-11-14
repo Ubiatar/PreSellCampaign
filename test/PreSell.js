@@ -127,9 +127,7 @@ describe("PreSell start campaign", () => {
 
   it("should fail to start", () => {
     return preSellDeploy(100)
-      .then(() => preSell.startCampaign(0))
-      .then(() => {throw "it should not be successfull"})
-      .catch(err => assert(err, "it should fail"))
+      .then(() => preSell.startCampaign(0)).should.be.rejected;
   })
 
   it("should fail to start", () => {
