@@ -510,40 +510,39 @@ describe("PreSell token assignment", () => {
         "should be 4000000"
       ))
   })
-})
 
-  it("should update address balance more times", () => {
-    return preSellDeploy(web3.toWei(1, "ether"), web3.toWei(100, "ether"))
-      .then(() => preSell.startCampaign(3600, {from: owner}))
-      // First assignment
-      .then(() => preSell.assignTokens(funder, web3.toWei(2, "ether"), {from: owner}))
-      .then(() => preSell.remainingSupply())
-      .then(remainingSupply => assert.strictEqual(
-        remainingSupply.toString(10),
-        web3.toWei(98, 'ether'),
-        "should be 98"
-      ))
-      .then(() => preSell.getBalance({from: funder}))
-      .then(balance => assert(balance.toString(10) === web3.toWei(2, "ether"), "should be 2 token"))
-      // Second assignment. Should overwrite previous one
-      .then(() => preSell.assignTokens(funder, web3.toWei(8, "ether"), {from: owner}))
-      .then(() => preSell.remainingSupply())
-      .then(remainingSupply => assert.strictEqual(
-        remainingSupply.toString(10),
-        web3.toWei(92, 'ether'),
-        "should be 92"
-      ))
-      .then(() => preSell.getBalance({from: funder}))
-      .then(balance => assert(balance.toString(10) === web3.toWei(8, "ether"), "should be 8 token"))
-      // Third assignment. Should overwrite previous two
-      .then(() => preSell.assignTokens(funder, web3.toWei(6, "ether"), {from: owner}))
-      .then(() => preSell.remainingSupply())
-      .then(remainingSupply => assert.strictEqual(
-        remainingSupply.toString(10),
-        web3.toWei(94, 'ether'),
-        "should be 94"
-      ))
-      .then(() => preSell.getBalance({from: funder}))
-      .then(balance => assert(balance.toString(10) === web3.toWei(6, "ether"), "should be 6 token"))
-  })
+    it("should update address balance more times", () => {
+        return preSellDeploy(web3.toWei(1, "ether"), web3.toWei(100, "ether"))
+            .then(() => preSell.startCampaign(3600, {from: owner}))
+            // First assignment
+            .then(() => preSell.assignTokens(funder, web3.toWei(2, "ether"), {from: owner}))
+            .then(() => preSell.remainingSupply())
+            .then(remainingSupply => assert.strictEqual(
+                remainingSupply.toString(10),
+                web3.toWei(98, 'ether'),
+                "should be 98"
+            ))
+            .then(() => preSell.getBalance({from: funder}))
+            .then(balance => assert(balance.toString(10) === web3.toWei(2, "ether"), "should be 2 token"))
+            // Second assignment. Should overwrite previous one
+            .then(() => preSell.assignTokens(funder, web3.toWei(8, "ether"), {from: owner}))
+            .then(() => preSell.remainingSupply())
+            .then(remainingSupply => assert.strictEqual(
+                remainingSupply.toString(10),
+                web3.toWei(92, 'ether'),
+                "should be 92"
+            ))
+            .then(() => preSell.getBalance({from: funder}))
+            .then(balance => assert(balance.toString(10) === web3.toWei(8, "ether"), "should be 8 token"))
+            // Third assignment. Should overwrite previous two
+            .then(() => preSell.assignTokens(funder, web3.toWei(6, "ether"), {from: owner}))
+            .then(() => preSell.remainingSupply())
+            .then(remainingSupply => assert.strictEqual(
+                remainingSupply.toString(10),
+                web3.toWei(94, 'ether'),
+                "should be 94"
+            ))
+            .then(() => preSell.getBalance({from: funder}))
+            .then(balance => assert(balance.toString(10) === web3.toWei(6, "ether"), "should be 6 token"))
+    })
 })

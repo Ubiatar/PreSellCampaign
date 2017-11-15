@@ -7,5 +7,5 @@ module.exports = function(deployer) {
   deployer.link(Owned, PreSell);
   deployer.deploy(SafeMath);
   deployer.link(SafeMath, PreSell);
-  deployer.deploy(PreSell, 1);
+  deployer.deploy(PreSell, 1, 4000000);
 };
