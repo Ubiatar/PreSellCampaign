@@ -7,25 +7,19 @@ contract PreSell is Owned {
     using SafeMath for uint;
 
     uint public decimals = 18;
-
-    uint256 public initialSupply = 4000000 * 10 ** decimals;
-
-    uint256 public remainingSupply = initialSupply;
-
+    uint256 public initialSupply = 0;
+    uint256 public remainingSupply = 0;
     uint256 public tokenValue;
-
     uint256 public endTime;
-
     bool public isCampaignStarted;
-
     address public toBeRefund = 0x0;
-
     uint256 public refundAmount;
+    mapping (address => uint256) balances;
 
     event CampaignStarted();
     event UpdateValue(uint256 newValue);
-    event AssignToken(address indexed to, uint value);
-    event GiveToken(address to, uint value);
+    event AssignToken(address to, uint value);
+    event PurchaseToken(address to, uint value);
     event Overflow(address to, uint value);
     event Withdraw(address to, uint value);
     event Refund(address to, uint value);
@@ -39,17 +33,21 @@ contract PreSell is Owned {
 
     function PreSell
     (
-    uint256 _tokenValue
+        uint256 _tokenValue,
+        uint256 _initialSupply
     )
     {
         require(_tokenValue > 0);
+        require(_initialSupply > 0);
         isCampaignStarted = false;
         tokenValue = _tokenValue;
+        initialSupply = _initialSupply;
+        remainingSupply = initialSupply;
     }
 
     function startCampaign
     (
-    uint256 _seconds
+        uint256 _seconds
     )
     onlyOwner
     {
@@ -61,7 +59,7 @@ contract PreSell is Owned {
 
     function updateValue
     (
-    uint256 newValue
+        uint256 newValue
     )
     onlyOwner
     {
@@ -69,21 +67,20 @@ contract PreSell is Owned {
         UpdateValue(newValue);
     }
 
-    function giveTokens
+    function assignTokens
     (
-    address receiver,
-    uint256 _tokens
+         address receiver,
+         uint256 tokens
     )
     onlyOwner
     {
-        require(remainingSupply > 0);
         require(receiver != 0x0);
-        require(_tokens > 0);
-        uint256 tokens = _tokens * 10 ** decimals;
+        require(tokens >= 0);
+        remainingSupply = remainingSupply.add(balances[receiver]);
         require(remainingSupply >= tokens);
         remainingSupply = remainingSupply.sub(tokens);
+        balances[receiver] = tokens;
         AssignToken(receiver, tokens);
-        GiveToken(receiver, tokens);
     }
 
     function withdraw ()
@@ -107,6 +104,13 @@ contract PreSell is Owned {
         Refund(_toBeRefund, _refundAmount);
     }
 
+    function getBalance ()
+    constant
+    returns (uint256 balance)
+    {
+        return balances[msg.sender];
+    }
+
     /* *******
         PreSell payment fallback
     ******* */
@@ -116,19 +120,22 @@ contract PreSell is Owned {
     {
         require(remainingSupply > 0);
         require(msg.value >= 50 finney);
+        address receiver = msg.sender;
         uint256 tokens = msg.value.mul(10 ** decimals).div(tokenValue);
         if (remainingSupply >= tokens) {
             remainingSupply = remainingSupply.sub(tokens);
-            AssignToken(msg.sender, tokens);
+            balances[receiver] = balances[receiver].add(tokens);
+            PurchaseToken(receiver, tokens);
         } else {
             tokens = remainingSupply;
             uint256 _refundAmount = msg.value.sub(remainingSupply.mul(tokenValue).div(10 ** decimals));
             require(_refundAmount < msg.value);
+            balances[receiver] = balances[receiver].add(tokens);
             remainingSupply = 0;
             refundAmount = _refundAmount;
-            toBeRefund = msg.sender;
-            AssignToken(msg.sender, tokens);
-            Overflow(msg.sender, _refundAmount);
+            toBeRefund = receiver;
+            PurchaseToken(receiver, tokens);
+            Overflow(receiver, _refundAmount);
         }
     }
 }
