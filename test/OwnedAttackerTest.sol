@@ -3,28 +3,18 @@ pragma solidity ^0.4.0;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/Owned.sol";
-import "../contracts/OwnedAttacker.sol";
 
 contract OwnedAttackerTest {
 
-    function createOwned()
-    public
-    returns (address)
-    {
-        return new Owned();
-    }
-
-    OwnedAttacker testOwnedAttacker;
     Owned testOwned;
+    address ownedOwner;
 
     function OwnedAttackerTest(){
-        testOwnedAttacker = OwnedAttacker(DeployedAddresses.OwnedAttacker());
-        testOwned = Owned(testOwnedAttacker.createOwned());
+        testOwned = Owned(DeployedAddresses.Owned());
     }
 
-    function testIsOwnerIsSet() {
-        address ownedOwner = testOwned.owner();
-        address ownedAttackerOwner = testOwnedAttacker.owner();
-        Assert.equal(ownedAttackerOwner, ownedOwner, "Owner's address does not match");
+    function testIfOwnerIsSet() {
+       // ownedOwner = testOwned.owner();
+        Assert.equal(testOwned.owner(), tx.origin, "Should be owner");
     }
 }
