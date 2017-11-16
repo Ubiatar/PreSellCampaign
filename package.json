@@ -13,6 +13,7 @@
     "test_all": "truffle test",
     "deploy": "truffle deploy",
     "migrate": "./node_modules/.bin/truffle.cmd migrate --network ropsten",
+    "win_deploy": "truffle.cmd deploy",
     "win_compile": "rimraf build && truffle.cmd compile",
     "win_testrpc": "./node_modules/.bin/testrpc.cmd",
     "win_test_all": "truffle.cmd test"
