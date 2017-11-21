@@ -4,7 +4,6 @@ const web3 = new Web3()
 var Owned = artifacts.require("./Owned.sol");
 var SafeMath = artifacts.require("./SafeMath.sol");
 var PreSell = artifacts.require("./PreSell.sol");
-var OwnedAttacker = artifacts.require("./OwnedAttacker.sol");
 
 module.exports = function(deployer) {
   deployer.deploy(Owned);
