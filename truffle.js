@@ -9,7 +9,14 @@ module.exports = {
             host: "localhost",
             port: 8545,
             network_id: "*", // Match any network id
-            gas: 2000000,
+            gas: 4000000,
+            gasPrice:  20000000000
+        },
+        ganache: {
+            host: "localhost",
+            port: 8545,
+            network_id: 42,
+            gas: 6500000,
             gasPrice:  20000000000
         },
         ropsten: {

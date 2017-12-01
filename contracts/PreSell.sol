@@ -10,13 +10,13 @@ contract PreSell is Owned {
     uint256 public initialSupply = 0;
     uint256 public remainingSupply = 0;
     uint256 public tokenValue;
-    uint256 public endTime;
     bool public isCampaignStarted;
     address public toBeRefund = 0x0;
     uint256 public refundAmount;
     mapping (address => uint256) balances;
 
     event CampaignStarted();
+    event CampaignStopped();
     event UpdateValue(uint256 newValue);
     event AssignToken(address to, uint value);
     event PurchaseToken(address to, uint value);
@@ -24,10 +24,9 @@ contract PreSell is Owned {
     event Withdraw(address to, uint value);
     event Refund(address to, uint value);
 
-    modifier startedAndBeforeEndTime()
+    modifier campaignStarted
     {
         require(isCampaignStarted);
-        require(now < endTime);
         _;
     }
 
@@ -47,14 +46,19 @@ contract PreSell is Owned {
 
     function startCampaign
     (
-        uint256 _seconds
+        uint256 _start
     )
     onlyOwner
     {
-        require(_seconds > 0);
-        endTime = now + _seconds * 1 seconds;
-        isCampaignStarted = true;
-        CampaignStarted();
+        require(_start == 1 || _start == 0);
+        if(_start == 1) {
+            isCampaignStarted = true;
+            CampaignStarted();
+        }
+        else {
+            isCampaignStarted = false;
+            CampaignStopped();
+        }
     }
 
     function updateValue
@@ -116,7 +120,7 @@ contract PreSell is Owned {
     ******* */
     function()
     payable
-    startedAndBeforeEndTime
+    campaignStarted
     {
         require(remainingSupply > 0);
         require(msg.value >= 50 finney);

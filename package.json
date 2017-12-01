@@ -12,7 +12,10 @@
     "testSolidity": "./node_modules/.bin/truffle test",
     "test_all": "truffle test",
     "deploy": "truffle deploy",
-    "migrate": "./node_modules/.bin/truffle.cmd migrate --network ropsten",
+    "console": "truffle console --network ganache",
+    "migrateRopsten": "./node_modules/.bin/truffle.cmd migrate --network ropsten",
+    "migrateGanache": "./node_modules/.bin/truffle migrate --network ganache",
+    "win_deploy": "truffle.cmd deploy",
     "win_compile": "rimraf build && truffle.cmd compile",
     "win_testrpc": "./node_modules/.bin/testrpc.cmd",
     "win_test_all": "truffle.cmd test"
