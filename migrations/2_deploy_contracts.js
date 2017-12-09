@@ -10,5 +10,5 @@ module.exports = function(deployer) {
   deployer.link(Owned, PreSell);
   deployer.deploy(SafeMath);
   deployer.link(SafeMath, PreSell);
-  deployer.deploy(PreSell, 1, web3.toWei(10000000, "ether"));
+  deployer.deploy(PreSell, web3.toWei(0.1, "ether") , web3.toWei(10000000, "ether"));
 };

@@ -32,8 +32,8 @@ contract PreSell is Owned {
 
     function PreSell
     (
-        uint256 _tokenValue,
-        uint256 _initialSupply
+    uint256 _tokenValue,
+    uint256 _initialSupply
     )
     {
         require(_tokenValue > 0);
@@ -46,7 +46,7 @@ contract PreSell is Owned {
 
     function startCampaign
     (
-        uint256 _start
+    uint256 _start
     )
     onlyOwner
     {
@@ -63,7 +63,7 @@ contract PreSell is Owned {
 
     function updateValue
     (
-        uint256 newValue
+    uint256 newValue
     )
     onlyOwner
     {
@@ -73,8 +73,8 @@ contract PreSell is Owned {
 
     function assignTokens
     (
-         address receiver,
-         uint256 tokens
+    address receiver,
+    uint256 tokens
     )
     onlyOwner
     {
@@ -108,11 +108,15 @@ contract PreSell is Owned {
         Refund(_toBeRefund, _refundAmount);
     }
 
-    function getBalance ()
+    function getBalance
+    (
+    address user
+    )
     constant
     returns (uint256 balance)
     {
-        return balances[msg.sender];
+        balance = balances[user];
+        return balance;
     }
 
     /* *******
