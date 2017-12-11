@@ -278,7 +278,7 @@ describe("PreSell token purchase", () => {
         return preSellDeploy(web3.toWei(1, "ether"), web3.toWei(10, "ether"))
             .then(() => preSell.isCampaignStarted())
             .then(isCampaignStarted => assert(!isCampaignStarted, "should not be started yet"))
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === '0', "should be zero"))
             .then(() => preSell.startCampaign(1, {from: owner}))
             .then(() => preSell.isCampaignStarted())
@@ -295,7 +295,7 @@ describe("PreSell token purchase", () => {
             .then(events => {
                 assert(events[0].args.to === tokenBuyer, "should be the token buyer")
             })
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === web3.toWei(1, "ether"), "should be 1 token"))
     })
 
@@ -303,7 +303,7 @@ describe("PreSell token purchase", () => {
         return preSellDeploy(web3.toWei(1, "ether"), web3.toWei(10, "ether"))
             .then(() => preSell.isCampaignStarted())
             .then(isCampaignStarted => assert.strictEqual(isCampaignStarted, false, "should not be started yet"))
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert.strictEqual(balance.toString(10), '0', "should be zero"))
             .then(() => preSell.startCampaign(1, {from: owner}))
             .then(() => preSell.isCampaignStarted())
@@ -314,7 +314,7 @@ describe("PreSell token purchase", () => {
                 value: web3.toWei(1, "ether"),
                 gas: 500000
             }))
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert.strictEqual(balance.toString(10), web3.toWei(1, "ether"), "should be 1 token"))
             .then(() => preSell.startCampaign(0, {from: owner}))
             .then(() => preSell.isCampaignStarted())
@@ -328,7 +328,7 @@ describe("PreSell token purchase", () => {
                 value: web3.toWei(1, "ether"),
                 gas: 500000
             }))
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert.strictEqual(balance.toString(10), web3.toWei(2, "ether"), "should be 1 token"))
     })
 
@@ -351,7 +351,7 @@ describe("PreSell token purchase", () => {
             .then(events => {
                 assert(events[0].args.to === tokenBuyer, "should be the token buyer")
             })
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === web3.toWei(50, "finney"), "should be 0.05 token"))
     })
 
@@ -377,7 +377,7 @@ describe("PreSell token purchase", () => {
                 value: web3.toWei(1, "ether"),
                 gas: 500000
             }))
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === web3.toWei(1, "ether"), "should be 1 token"))
             .then(() => web3.eth.sendTransactionPromise({
                 from: tokenBuyer,
@@ -385,7 +385,7 @@ describe("PreSell token purchase", () => {
                 value: web3.toWei(2, "ether"),
                 gas: 500000
             }))
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === web3.toWei(3, "ether"), "should be 3 total token"))
     })
 
@@ -424,7 +424,7 @@ describe("PreSell token purchase", () => {
             }))
             .then(() => web3.eth.getBalancePromise(tokenBuyer))
             .then(_balance => assert(balance.sub(web3.toWei(3, 'ether')).toString(10) === _balance.toString(10), "should be initial balance - 3 ether"))
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === web3.toWei(3000000, "ether"), "should be 3000000 token"))
             .then(() => preSell.remainingSupply())
             .then(remainingSupply => assert(remainingSupply.toString(10) === web3.toWei(1000000, 'ether'), "should be 1000000 of tokens"))
@@ -454,7 +454,7 @@ describe("PreSell token purchase", () => {
                 assert(lastEvent.args.to === tokenBuyer, "should be the token buyer")
                 assert(lastEvent.args.value.toString(10) === web3.toWei(2, 'ether'), "should be 2 ether of payback")
             })
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === web3.toWei(4000000, "ether"), "should be 4000000 token"))
             .then(() => preSell.refundAmount())
             .then(refundAmount => assert(refundAmount.toString(10) === web3.toWei(2, 'ether').toString(10), "should be 2 ether of refunds"))
@@ -481,6 +481,13 @@ describe("PreSell token purchase", () => {
             .then(() => preSell.withdraw({from: owner, gasPrice: 0}))
             .then(() => web3.eth.getBalancePromise(owner))
             .then(_balance => assert(_balance.toString(10) === balance.add(web3.toWei(4, 'ether')).toString(10), "should be balance plus 4 Ether of campaign"))
+    })
+
+    it("should get a balance of 0", () => {
+        return preSellDeploy(web3.toWei(1, "ether"), web3.toWei(100, "ether"))
+            .then(() => preSell.startCampaign(1, {from: owner}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
+            .then(balance => assert(balance.toString(10) === web3.toWei(0, "ether"), "should be 0 token"))
     })
 })
 
@@ -534,7 +541,7 @@ describe("PreSell token assignment", () => {
                 assert(events[0].args.to === tokenBuyer, "should be the receiver of the give")
                 assert(events[0].args.value.toString(10) === web3.toWei(1, 'ether').toString(10), "should be 1 token")
             })
-            .then(() => preSell.getBalance({from: tokenBuyer}))
+            .then(() => preSell.getBalance(tokenBuyer, {from: tokenBuyer}))
             .then(balance => assert(balance.toString(10) === web3.toWei(1, "ether"), "should be 1 token"))
     })
 
@@ -573,7 +580,7 @@ describe("PreSell token assignment", () => {
                 web3.toWei(98, 'ether'),
                 "should be 98"
             ))
-            .then(() => preSell.getBalance({from: funder}))
+            .then(() => preSell.getBalance(funder, {from: funder}))
             .then(balance => assert(balance.toString(10) === web3.toWei(2, "ether"), "should be 2 token"))
             // Second assignment. Should overwrite previous one
             .then(() => preSell.assignTokens(funder, web3.toWei(8, "ether"), {from: owner}))
@@ -583,7 +590,7 @@ describe("PreSell token assignment", () => {
                 web3.toWei(92, 'ether'),
                 "should be 92"
             ))
-            .then(() => preSell.getBalance({from: funder}))
+            .then(() => preSell.getBalance(funder, {from: funder}))
             .then(balance => assert(balance.toString(10) === web3.toWei(8, "ether"), "should be 8 token"))
             // Third assignment. Should overwrite previous two
             .then(() => preSell.assignTokens(funder, web3.toWei(6, "ether"), {from: owner}))
@@ -593,7 +600,7 @@ describe("PreSell token assignment", () => {
                 web3.toWei(94, 'ether'),
                 "should be 94"
             ))
-            .then(() => preSell.getBalance({from: funder}))
+            .then(() => preSell.getBalance(funder, {from: funder}))
             .then(balance => assert(balance.toString(10) === web3.toWei(6, "ether"), "should be 6 token"))
     })
 })
